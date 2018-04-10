@@ -58,15 +58,32 @@ public class RedisCache extends AbstractCache {
             }
         }
     }
+    
+    @Override
+    public Object get(String key) {
+        ShardedJedis jedis = null;
+        try {
+            jedis = this.shardedJedisPool.getResource();
+            if (jedis.exists(key)) {
+                return jedis.get(key);
+            }
+        } finally {
+            if (jedis != null) {
+                jedis.close();
+            }
+        }
+
+        return null;
+    }
 
     @Override
-    public <T> T get(String key) {
+    public <T> T get(String key, Class<T> clazz) {
         ShardedJedis jedis = null;
         try {
             jedis = this.shardedJedisPool.getResource();
             if (jedis.exists(key)) {
                 String json = jedis.get(key);
-                return this.<T>deserialize(json);
+                return this.deserialize(json, clazz);
             }
         } finally {
             if (jedis != null) {

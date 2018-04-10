@@ -39,6 +39,6 @@ public class TestMemcache {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(mem.<TestModel>get(tm.getClass().getName()).getName(), "Bing");
+        Assert.assertEquals(mem.get(tm.getClass().getName(), TestModel.class).getName(), "Bing");
     }
 }

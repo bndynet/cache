@@ -1,5 +1,11 @@
 .gradle/
 .idea/
+.settings/
+.classpath
+.project
+
 out/
 target/
 build/
+/bin/
+

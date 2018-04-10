@@ -26,10 +26,16 @@ public class MemcachedCache extends AbstractCache {
     public void set(Object data, long exp) {
         this.memcachedClient.set(this.getKey(data), (int) exp, data);
     }
-
+    
     @Override
-    public <T> T get(String key) {
-        Object obj = this.memcachedClient.get(key);
+    public Object get(String key) {
+        return this.memcachedClient.get(key);
+    }
+
+    @SuppressWarnings("unchecked")
+	@Override
+    public <T> T get(String key, Class<T> clazz) {
+        Object obj = this.get(key);
         if (obj != null) {
             return (T)obj;
         }
