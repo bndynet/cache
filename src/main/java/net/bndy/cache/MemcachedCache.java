@@ -35,6 +35,7 @@ public class MemcachedCache extends AbstractCache {
     @SuppressWarnings("unchecked")
 	@Override
     public <T> T get(String key, Class<T> clazz) {
+    	key = clazz.getCanonicalName() + "#" + key;
         Object obj = this.get(key);
         if (obj != null) {
             return (T)obj;

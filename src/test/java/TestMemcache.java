@@ -30,15 +30,16 @@ public class TestMemcache {
     @Test public void factory() {
         MemcachedCache mem = new MemcachedCache ("127.0.0.1:11211,127.0.0.1:11212");
         TestModel tm = new TestModel();
-        tm.setId(1);
-        tm.setName("Bing");
+        tm.id = 1;
+        tm.name = "Bing";
         mem.set(tm, 0);
+        
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        Assert.assertEquals(mem.get(tm.getClass().getName(), TestModel.class).getName(), "Bing");
+        Assert.assertEquals(mem.get("1", TestModel.class).name, "Bing");
     }
 }
