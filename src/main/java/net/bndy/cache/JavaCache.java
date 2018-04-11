@@ -37,8 +37,9 @@ public class JavaCache extends AbstractCache {
 
 	@Override
 	public int delAll() {
+		int result = Cache.getSize();
 		Cache.clear();
-		return -1;
+		return result;
 	}
 
 }

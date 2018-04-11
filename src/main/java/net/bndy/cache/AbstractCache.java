@@ -17,7 +17,7 @@ public abstract class AbstractCache implements Cache {
     	Field fieldKey = CollectionHelper.first(ReflectionHelper.getAllFields(data.getClass()),
     			field -> AnnotationHelper.getFieldAnnotation(CacheKey.class, data.getClass(), field.getName()) != null);
     	if (fieldKey == null) {
-    		
+    		throw new Error("No cache key (@CacheKey) defined in " + data.getClass().getCanonicalName());
     	}
     	
         try {
