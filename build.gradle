@@ -1,7 +1,9 @@
 group 'net.bndy'
-version '1.0-SNAPSHOT'
+version '1.0'
 
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
 
 sourceCompatibility = 1.8
 
@@ -14,4 +16,81 @@ dependencies {
     compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
     compile group: 'net.bndy', name: 'lib', version: '1.0.9'
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+test {
+   exclude '**'
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+task copyDocs(type: Copy, dependsOn: javadocJar) {
+    from 'build/docs'
+    into 'docs'
+}
+javadocJar.finalizedBy(copyDocs)
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'Cache'
+                packaging 'jar'
+                description 'Cache with Java, Memcached and Redis'
+                url 'https://github.com/bndynet/cache'
+
+                organization {
+                    name 'BNDY-NET'
+                    url 'http://bndy.net'
+                }
+
+                scm {
+                    url 'https://github.com/bndynet/cache'
+                    connection 'scm:git:git://github.com/bndynet/cache.git'
+                    developerConnection 'scm:git:git@github.com:bndynet/cache.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'bndynet'
+                        name 'Bendy Zhang'
+                        email 'zb@bndy.net'
+                        url 'http://bndy.net'
+                    }
+                }
+            }
+        }
+    }
 }
